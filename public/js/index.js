@@ -1,99 +1,131 @@
-// Get references to page elements
-var $exampleText = $("#example-text");
-var $exampleDescription = $("#example-description");
-var $submitBtn = $("#submit");
-var $exampleList = $("#example-list");
+$(document).ready(function() {
+  /* global moment */
+  // blogContainer holds all of our posts
+  var blogContainer = $(".blog-container");
+  var postCategorySelect = $("#category");
+  // Click events for the edit and delete buttons
+  $(document).on("click", "button.delete", handlePostDelete);
+  $(document).on("click", "button.edit", handlePostEdit);
+  postCategorySelect.on("change", handleCategoryChange);
+  var posts;
 
-// The API object contains methods for each kind of request we'll make
-var API = {
-  saveExample: function(example) {
-    return $.ajax({
-      headers: {
-        "Content-Type": "application/json"
-      },
-      type: "POST",
-      url: "api/examples",
-      data: JSON.stringify(example)
-    });
-  },
-  getExamples: function() {
-    return $.ajax({
-      url: "api/examples",
-      type: "GET"
-    });
-  },
-  deleteExample: function(id) {
-    return $.ajax({
-      url: "api/examples/" + id,
-      type: "DELETE"
+  // This function grabs posts from the database and updates the view
+  function getPosts(category) {
+    var categoryString = category || "";
+    if (categoryString) {
+      categoryString = "/category/" + categoryString;
+    }
+    $.get("/api/posts" + categoryString, function(data) {
+      console.log("Posts", data);
+      posts = data;
+      if (!posts || !posts.length) {
+        displayEmpty();
+      }
+      else {
+        initializeRows();
+      }
     });
   }
-};
 
-// refreshExamples gets new examples from the db and repopulates the list
-var refreshExamples = function() {
-  API.getExamples().then(function(data) {
-    var $examples = data.map(function(example) {
-      var $a = $("<a>")
-        .text(example.text)
-        .attr("href", "/example/" + example.id);
-
-      var $li = $("<li>")
-        .attr({
-          class: "list-group-item",
-          "data-id": example.id
-        })
-        .append($a);
-
-      var $button = $("<button>")
-        .addClass("btn btn-danger float-right delete")
-        .text("ｘ");
-
-      $li.append($button);
-
-      return $li;
-    });
-
-    $exampleList.empty();
-    $exampleList.append($examples);
-  });
-};
-
-// handleFormSubmit is called whenever we submit a new example
-// Save the new example to the db and refresh the list
-var handleFormSubmit = function(event) {
-  event.preventDefault();
-
-  var example = {
-    text: $exampleText.val().trim(),
-    description: $exampleDescription.val().trim()
-  };
-
-  if (!(example.text && example.description)) {
-    alert("You must enter an example text and description!");
-    return;
+  // This function does an API call to delete posts
+  function deletePost(id) {
+    $.ajax({
+      method: "DELETE",
+      url: "/api/posts/" + id
+    })
+      .then(function() {
+        getPosts(postCategorySelect.val());
+      });
   }
 
-  API.saveExample(example).then(function() {
-    refreshExamples();
-  });
+  // Getting the initial list of posts
+  getPosts();
+  // InitializeRows handles appending all of our constructed post HTML inside
+  // blogContainer
+  function initializeRows() {
+    blogContainer.empty();
+    var postsToAdd = [];
+    for (var i = 0; i < posts.length; i++) {
+      postsToAdd.push(createNewRow(posts[i]));
+    }
+    blogContainer.append(postsToAdd);
+  }
 
-  $exampleText.val("");
-  $exampleDescription.val("");
-};
+  // This function constructs a post's HTML
+  function createNewRow(post) {
+    var newPostCard = $("<div>");
+    newPostCard.addClass("card");
+    var newPostCardHeading = $("<div>");
+    newPostCardHeading.addClass("card-header");
+    var deleteBtn = $("<button>");
+    deleteBtn.text("x");
+    deleteBtn.addClass("delete btn btn-danger");
+    var editBtn = $("<button>");
+    editBtn.text("EDIT");
+    editBtn.addClass("edit btn btn-default");
+    var newPostTitle = $("<h2>");
+    var newPostDate = $("<small>");
+    var newPostCategory = $("<h5>");
+    newPostCategory.text(post.category);
+    newPostCategory.css({
+      float: "right",
+      "font-weight": "700",
+      "margin-top":
+      "-15px"
+    });
+    var newPostCardBody = $("<div>");
+    newPostCardBody.addClass("card-body");
+    var newPostBody = $("<p>");
+    newPostTitle.text(post.title + " ");
+    newPostBody.text(post.body);
+    var formattedDate = new Date(post.createdAt);
+    formattedDate = moment(formattedDate).format("MMMM Do YYYY, h:mm:ss a");
+    newPostDate.text(formattedDate);
+    newPostTitle.append(newPostDate);
+    newPostCardHeading.append(deleteBtn);
+    newPostCardHeading.append(editBtn);
+    newPostCardHeading.append(newPostTitle);
+    newPostCardHeading.append(newPostCategory);
+    newPostCardBody.append(newPostBody);
+    newPostCard.append(newPostCardHeading);
+    newPostCard.append(newPostCardBody);
+    newPostCard.data("post", post);
+    return newPostCard;
+  }
 
-// handleDeleteBtnClick is called when an example's delete button is clicked
-// Remove the example from the db and refresh the list
-var handleDeleteBtnClick = function() {
-  var idToDelete = $(this)
-    .parent()
-    .attr("data-id");
+  // This function figures out which post we want to delete and then calls
+  // deletePost
+  function handlePostDelete() {
+    var currentPost = $(this)
+      .parent()
+      .parent()
+      .data("post");
+    deletePost(currentPost.id);
+  }
 
-  API.deleteExample(idToDelete).then(function() {
-    refreshExamples();
-  });
-};
+  // This function figures out which post we want to edit and takes it to the
+  // Appropriate url
+  function handlePostEdit() {
+    var currentPost = $(this)
+      .parent()
+      .parent()
+      .data("post");
+    window.location.href = "/cms?post_id=" + currentPost.id;
+  }
 
-// Add event listeners to the submit and delete buttons
-$submitBtn.on("click", handleFormSubmit);
-$exampleList.on("click", ".delete", handleDeleteBtnClick);
+  // This function displays a message when there are no posts
+  function displayEmpty() {
+    blogContainer.empty();
+    var messageH2 = $("<h2>");
+    messageH2.css({ "text-align": "center", "margin-top": "50px" });
+    messageH2.html("No posts yet for this category, navigate <a href='/cms'>here</a> in order to create a new post.");
+    blogContainer.append(messageH2);
+  }
+
+  // This function handles reloading new posts when the category changes
+  function handleCategoryChange() {
+    var newPostCategory = $(this).val();
+    getPosts(newPostCategory);
+  }
+
+});
