@@ -22,8 +22,22 @@ button.edit {
 .navbar {
   margin-top: 10px;
 }
+<<<<<<< HEAD
+input[type=text], select {
+  width: 100%;
+  padding: 12px 20px;
+  margin: 8px 0;
+  display: block;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  justify-content: center;
+  text-justify: center;
+}
+=======
 
 #userTickets {
   margin-top: 80px;
  
 }
+>>>>>>> 502c54373a14172b10a51bfcf7463d3948f86dc9
