@@ -23,6 +23,7 @@ $(document).ready(function() {
         if(password === result.Password)
         {
           console.log("Login Success!");
+          window.location.pathname = '/tickets'
         }
         else
         {
