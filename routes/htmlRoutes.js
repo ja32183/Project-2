@@ -1,4 +1,4 @@
-ar path = require("path");
+var path = require("path");
 
 // Routes
 // =============================================================
