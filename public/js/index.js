@@ -13,7 +13,7 @@ $(document).ready(function() {
       if(!result)
       {
         console.log("Username Does not exist");
-       // window.location.pathname = '/'
+  
         $("#password").val(' ');
         $("#username").val(' ');
       }
@@ -29,7 +29,7 @@ $(document).ready(function() {
         else
         {
           console.log("Password Incorrect!");
-         // window.location.pathname = '/'
+
           $("#password").val(' ');
         }
       }

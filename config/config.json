@@ -1,8 +1,8 @@
 {
     "development": {
         "username": "root",
-        "password": "Gardner01",
-        "database": "Helpdesk_db",
+        "password": "548237",
+        "database": "blogger",
         "host": "127.0.0.1",
         "port": 3306,
         "dialect": "mysql"
