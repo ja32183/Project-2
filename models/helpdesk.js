@@ -17,6 +17,9 @@ module.exports = function(sequelize, DataTypes) {
         Closed: {
             type: DataTypes.BOOLEAN,
             defaultValue: false
+        },
+        Notes: {
+            type: DataTypes.TEXT
         }
     });
     return Helpdesk;
