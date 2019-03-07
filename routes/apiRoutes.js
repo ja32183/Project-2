@@ -1,12 +1,27 @@
 var db = require("../models");
 
 module.exports = function(app) {
+
+    //Return User where username is matched
+    app.get("/api/login/:username", function(req, res) {
+        // We just have to specify which todo we want to destroy with "where"
+        db.Users.findOne({
+          where: {
+            username: req.params.username
+          }
+        }).then(function(dbUsers) {
+          res.json(dbUsers);
+        });
+    
+      });
+
+
     // Get all tickets
     app.get("/api/helpdesk", function(req, res) {
         db.Helpdesk.findAll({}).then(function(dbHelpdesk) {
             res.json(dbHelpdesk);
         });
-    });.
+    });
 
     //get all tickets assigned to a particular technician.
     app.get("/api/helpdesk/Assigned_To/Assigned_To:", function(req, res) {
