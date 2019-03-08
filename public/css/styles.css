@@ -38,3 +38,18 @@ input[type=text], select {
   margin: 0 0 0 36%;
 
 }
+
+
+.footer {
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  text-align: center;
+}
+
+/*Hide All tickets div*/
+#allTickets {
+  display: none;
+  }
+
