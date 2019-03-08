@@ -7,6 +7,7 @@ passport.use(new LocalStrategy(
         console.log(username +" "+ password);
         db.Users.findOne({
             where: {
+
               username:username}
             }).then(function(user){
         if (!user) {
@@ -27,8 +28,6 @@ module.exports = function(app) {
     app.post('/api/login',
     passport.authenticate('local', {successRedirect: '/tickets',failureRedirect: '/',session: false}));
 
-
-
     // Get all tickets
     app.get("/api/helpdesk", function(req, res) {
         db.Helpdesk.findAll({}).then(function(dbHelpdesk) {
@@ -47,21 +46,12 @@ module.exports = function(app) {
         });
     });
 
-    //get all tickets assigned to a particular technician.
-    app.get("/api/helpdesk/Assigned_To/Assigned_To:", function(req, res) {
+    //git all tickets opened by a particular user.
+    app.get("/api/helpdesk/Opened_By/:Created_By", function(req, res) {
         db.Helpdesk.findAll({
             where: {
-                Assigned_To: req.params.Assigned_To
+                Created_By: req.params.Created_By
             }
-        }).then(function(dbHelpdesk) {
-            res.json(dbHelpdesk);
-        });
-    });
-
-    //git all tickets opened by a particular user.
-    app.get("/api/helpdesk/Opened_By/:username", function(req, res) {
-        db.Helpdesk.findAll({
-            include: [db.Users]
         }).then(function(dbHelpdesk) {
             res.json(dbHelpdesk);
         });
