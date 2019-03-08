@@ -28,6 +28,17 @@ module.exports = function(app) {
     app.post('/api/login',
     passport.authenticate('local', {successRedirect: '/tickets',failureRedirect: '/',session: false}));
 
+    // Get the one user
+    app.get("/api/login/:username", function(req, res) {
+        db.Users.findOne({
+            where: {
+                username: req.params.username
+            }
+        }).then(function(dbHelpdesk) {
+            res.json(dbHelpdesk);
+        });
+    });
+
     // Get all tickets
     app.get("/api/helpdesk", function(req, res) {
         db.Helpdesk.findAll({}).then(function(dbHelpdesk) {

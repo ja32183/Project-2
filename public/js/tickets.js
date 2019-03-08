@@ -10,9 +10,8 @@ $(document).ready(function() {
 
     function getUserCreds() {
         $.get("/api/login/" + username, function(data) {
-            console.log(data.Admin);
+            console.log("Is Admin: " + data.Admin);
             if (data.Admin) {
-                console.log(data.Admin);
                 getAllTickets();
             } else {
                 console.log("called");
