@@ -2,7 +2,8 @@ $(document).ready(function() {
 
   $("#login").on("click",function(){
     var username = $("#username").val().trim();
-    var password = $("#password").val().trim();
+    localStorage.setItem("username", username);
+  
    
     // $.ajax({
     //   method: "GET",
