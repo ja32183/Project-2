@@ -1,19 +1,32 @@
 var db = require("../models");
+var passport = require('passport');
+var LocalStrategy = require('passport-local').Strategy;
+
+passport.use(new LocalStrategy(
+    function(username, password, done) {
+        console.log(username +" "+ password);
+        db.Users.findOne({
+            where: {
+              username:username}
+            }).then(function(user){
+        if (!user) {
+            
+            return done(null, false);
+        }
+        if (password !== user.Password) {
+            
+            return done(null, false);
+        }
+        
+        return done(null, true);
+      });
+    }));
 
 module.exports = function(app) {
 
-    //Return User where username is matched
-    app.get("/api/login/:username", function(req, res) {
-        // We just have to specify which todo we want to destroy with "where"
-        db.Users.findOne({
-            where: {
-                username: req.params.username
-            }
-        }).then(function(dbUsers) {
-            res.json(dbUsers);
-        });
+    app.post('/api/login',
+    passport.authenticate('local', {successRedirect: '/tickets',failureRedirect: '/',session: false}));
 
-    });
 
 
     // Get all tickets

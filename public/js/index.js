@@ -1,34 +1,69 @@
 $(document).ready(function() {
 
-    $("#login").on("click", function() {
-        var username = $("#username").val().trim();
-        var password = $("#password").val().trim();
+  $("#login").on("click",function(){
+    var username = $("#username").val().trim();
+    var password = $("#password").val().trim();
+   
+    // $.ajax({
+    //   method: "GET",
+    //   url: "/api/login/" + username
+    // }).then(function(result)
+    // {
+    //   if(!result)
+    //   {
+    //     console.log("Username Does not exist");
+       
+    //     $("#password").val(' ');
+    //     $("#username").val(' ');
+    //   }
+    //   else
+    //   {
+    //     if(password === result.Password)
+    //     {
+    //       console.log("Login Success!");
+    //       window.location.pathname = '/tickets'
+    //     }
+    //     else
+    //     {
+    //       console.log("Password Incorrect!");
+         
+    //       $("#password").val(' ');
+    //     }
+    //   }
+    // });
 
-        //console.log(username);
-        $.ajax({
-            method: "GET",
-            url: "/api/login/" + username
-        }).then(function(result) {
-            if (!result) {
-                console.log("Username Does not exist");
-                // window.location.pathname = '/'
-                $("#password").val(' ');
-                $("#username").val(' ');
-            } else {
-                console.log(result.Password);
-                console.log(password);
-                if (password === result.Password) {
-                    console.log("Login Success!");
-                    window.location.pathname = '/tickets'
-                } else {
-                    console.log("Password Incorrect!");
-                    // window.location.pathname = '/'
-                    $("#password").val(' ');
-                }
-            }
-        });
-        localStorage.setItem("username", username);
-    });
+    // $.ajax
+    // ({
+    //   method: "POST",
+    //   url:"/api/login",
+    //   data: {username:username, password:password}
+    //  })
+     //.then(function(result)
+    // {
+    //   if(!result)
+    //   {
+    //     console.log("Username Does not exist");
+       
+    //     $("#password").val(' ');
+    //     $("#username").val(' ');
+    //   }
+    //   else
+    //   {
+    //     if(password === result.Password)
+    //     {
+    //       console.log("Login Success!");
+    //       window.location.pathname = '/tickets'
+    //     }
+    //     else
+    //     {
+    //       console.log("Password Incorrect!");
+         
+    //       $("#password").val(' ');
+    //     }
+    //   }
+    // });
+  });
+
 
 
 
