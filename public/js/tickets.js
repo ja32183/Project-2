@@ -55,15 +55,30 @@ $(document).ready(function() {
 */
 
     //David.S code starts here.
+    var username = localStorage.getItem("username");
+    console.log(username);
+    localStorage.clear();
+
     $(document).on("click", "button#ticketDetailButton",
         getTicketDetails);
+
+    function getUserCreds() {
+        $.get("/api/login/" + username, function(data) {
+            if (data.Admin) {
+                getAllTickets();
+            } else {
+                getUsersTickets();
+            }
+        })
+    }
 
     function createTicket() {
         var ticket = $("#request-type").val().trim();
         var description = $("#problem-description").val().trim();
         var newTicket = {
             Title: ticket,
-            Description: description
+            Description: description,
+            Created_By: username
         };
         $.post("api/helpdesk", newTicket).then(getAllTickets());
     }
@@ -82,11 +97,27 @@ $(document).ready(function() {
             }
         });
     }
+
+    function getUsersTickets() {
+        $("#userTicketsAppend").empty();
+        $.get("/api/helpdesk/Opened_By/" + username, function(data) {
+            if (data.length === 0) {
+                $("#userTicketsAppend").append("No Current Tickets");
+            } else {
+                for (var i = 0; i < data.length; i++) {
+                    if (data[i].Status !== 'Closed') {
+                        $("#userTicketsAppend").append("<tr><td>" + data[i].id + "</td><td>" + data[i].Description + "</td><td>" + data[i].Status + "</td><td><button class='btn btn-primary' id='ticketDetailButton' value='" + data[i].id + "' data-target='ticketDetailsModal'>Ticket Details</button></td></tr>");
+                    }
+                }
+            }
+        })
+    }
+
     $("#submit").on("click", function(event) {
         createTicket();
     });
 
-    getAllTickets();
+    getUserCreds();
 
     function getTicketDetails(event) {
         event.preventDefault();

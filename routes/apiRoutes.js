@@ -46,11 +46,9 @@ module.exports = function(app) {
     });
 
     //git all tickets opened by a particular user.
-    app.get("/api/helpdesk/Opened_By/Opened_By:", function(req, res) {
+    app.get("/api/helpdesk/Opened_By/:username", function(req, res) {
         db.Helpdesk.findAll({
-            where: {
-                Opened_By: req.params.Opened_By
-            }
+            include: [db.Users]
         }).then(function(dbHelpdesk) {
             res.json(dbHelpdesk);
         });
