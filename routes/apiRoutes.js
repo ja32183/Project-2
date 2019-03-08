@@ -7,7 +7,7 @@ module.exports = function(app) {
         // We just have to specify which todo we want to destroy with "where"
         db.Users.findOne({
             where: {
-                username: req.params.username
+                Username: req.params.username
             }
         }).then(function(dbUsers) {
             res.json(dbUsers);
@@ -34,21 +34,12 @@ module.exports = function(app) {
         });
     });
 
-    //get all tickets assigned to a particular technician.
-    app.get("/api/helpdesk/Assigned_To/Assigned_To:", function(req, res) {
+    //git all tickets opened by a particular user.
+    app.get("/api/helpdesk/Opened_By/:Created_By", function(req, res) {
         db.Helpdesk.findAll({
             where: {
-                Assigned_To: req.params.Assigned_To
+                Created_By: req.params.Created_By
             }
-        }).then(function(dbHelpdesk) {
-            res.json(dbHelpdesk);
-        });
-    });
-
-    //git all tickets opened by a particular user.
-    app.get("/api/helpdesk/Opened_By/:username", function(req, res) {
-        db.Helpdesk.findAll({
-            include: [db.Users]
         }).then(function(dbHelpdesk) {
             res.json(dbHelpdesk);
         });

@@ -1,79 +1,21 @@
 $(document).ready(function() {
 
-
-
-
-    // Show div html based on user role
-    if (HelpDesk.user.role=="admin"){
-    $("#allTickets").show();
-    }
-    
-    //push ticket data to mysql db
-
-    /* $("#send-btn").on("click", function(event) {
-        event.preventDefault();
-        var newTicket = {
-            category: $("#category").val().trim(),
-            description: $("#ticketDescription").val().trim()
-
-        };
-
-
-        $.post("/api/characters", newTicket)
-            .then(function(data) {
-                console.log("add.html", data);
-                alert("Ticket has been added");
-            });
-    });
-
-    // This function grabs all the tickets in the DB
-    function getTickets(category) {
-        var categoryString = category || "";
-        if (categoryString) {
-            categoryString = "/category/" + categoryString;
-        }
-        $.get("/api/posts" + categoryString, function(data) {
-            console.log("Posts", data);
-            posts = data;
-            if (!posts || !posts.length) {
-                displayEmpty();
-            } else {
-                initializeRows();
-            }
-        });
-    }
-
-    // This function does an API call to delete posts
-    function deleteTicket(id) {
-        $.ajax({
-                method: "DELETE",
-                url: "/api/posts/" + id
-            })
-            .then(function() {
-                getPosts(postCategorySelect.val());
-            });
-    }
-
-    // Getting list of all tickets
-    getTickets();
-
-    
-    });
-*/
-
     //David.S code starts here.
     var username = localStorage.getItem("username");
     console.log(username);
-    localStorage.clear();
+
 
     $(document).on("click", "button#ticketDetailButton",
         getTicketDetails);
 
     function getUserCreds() {
         $.get("/api/login/" + username, function(data) {
+            console.log(data.Admin);
             if (data.Admin) {
+                console.log(data.Admin);
                 getAllTickets();
             } else {
+                console.log("called");
                 getUsersTickets();
             }
         })
@@ -87,7 +29,7 @@ $(document).ready(function() {
             Description: description,
             Created_By: username
         };
-        $.post("api/helpdesk", newTicket).then(getAllTickets());
+        $.post("api/helpdesk", newTicket).then(getUserCreds());
     }
 
     function getAllTickets() {
@@ -107,7 +49,9 @@ $(document).ready(function() {
 
     function getUsersTickets() {
         $("#userTicketsAppend").empty();
-        $.get("/api/helpdesk/Opened_By/" + username, function(data) {
+        console.log(username);
+        var Created_By = username;
+        $.get("/api/helpdesk/Opened_By/" + Created_By, function(data) {
             if (data.length === 0) {
                 $("#userTicketsAppend").append("No Current Tickets");
             } else {
@@ -155,7 +99,7 @@ $(document).ready(function() {
             method: "PUT",
             url: "/api/helpdesk/update",
             data: updateTicket
-        }).then(getAllTickets());
+        }).then(getUserCreds());
     }
 
     $("#update").on("click", function(event) {

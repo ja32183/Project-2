@@ -1,6 +1,5 @@
 module.exports = function(sequelize, DataTypes) {
     var Helpdesk = sequelize.define("Helpdesk", {
-        Opened_By: DataTypes.STRING,
         Title: DataTypes.TEXT,
         Status: {
             type: DataTypes.STRING,
@@ -26,15 +25,6 @@ module.exports = function(sequelize, DataTypes) {
             allowNull: false
         }
     });
-
-    Helpdesk.associate = function(models) {
-        Helpdesk.belongsTo(models.Users, {
-            foreignKey: {
-                allowNull: false
-            }
-        });
-    }
-
 
     return Helpdesk;
 };
