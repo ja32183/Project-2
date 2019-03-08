@@ -28,7 +28,7 @@ $(document).ready(function() {
             Description: description,
             Created_By: username
         };
-        $.post("api/helpdesk", newTicket).then(getUserCreds());
+        $.post("api/helpdesk", newTicket).then(location.reload());
     }
 
     function getAllTickets() {
