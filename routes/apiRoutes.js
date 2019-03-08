@@ -6,19 +6,30 @@ module.exports = function(app) {
     app.get("/api/login/:username", function(req, res) {
         // We just have to specify which todo we want to destroy with "where"
         db.Users.findOne({
-          where: {
-            username: req.params.username
-          }
+            where: {
+                username: req.params.username
+            }
         }).then(function(dbUsers) {
-          res.json(dbUsers);
+            res.json(dbUsers);
         });
-    
-      });
+
+    });
 
 
     // Get all tickets
     app.get("/api/helpdesk", function(req, res) {
         db.Helpdesk.findAll({}).then(function(dbHelpdesk) {
+            res.json(dbHelpdesk);
+        });
+    });
+
+    // Get one ticket by id to see details and update.
+    app.get("/api/helpdesk/ticket/:id", function(req, res) {
+        db.Helpdesk.findOne({
+            where: {
+                id: req.params.id
+            }
+        }).then(function(dbHelpdesk) {
             res.json(dbHelpdesk);
         });
     });
@@ -64,7 +75,7 @@ module.exports = function(app) {
     });
 
     // PUT route for updating tickets
-    app.put("/api/helpdesk", function(req, res) {
+    app.put("/api/helpdesk/update", function(req, res) {
         // Add code here to update a post using the values in req.body, where the id is equal to
         db.Helpdesk.update(req.body, {
             where: {
