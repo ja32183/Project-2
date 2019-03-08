@@ -4,9 +4,9 @@ $(document).ready(function() {
 
 
     // Show div html based on user role
-    if (HelpDesk.user.role=="admin"){
-    $("#allTickets").show();
-    }
+    //if (HelpDesk.user.role=="admin"){
+   // $("#allTickets").show();
+    //}
     
     //push ticket data to mysql db
 
