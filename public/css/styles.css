@@ -39,6 +39,7 @@ input[type=text], select {
 
 }
 
+
 .footer {
   position: fixed;
   left: 0;
@@ -46,3 +47,9 @@ input[type=text], select {
   width: 100%;
   text-align: center;
 }
+
+/*Hide All tickets div*/
+#allTickets {
+  display: none;
+  }
+
