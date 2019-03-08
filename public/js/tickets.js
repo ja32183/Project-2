@@ -75,7 +75,9 @@ $(document).ready(function() {
                 $("#userTicketsAppend").append("No Current Tickets");
             } else {
                 for (var i = 0; i < data.length; i++) {
-                    $("#userTicketsAppend").append("<tr><td>" + data[i].id + "</td><td>" + data[i].Description + "</td><td>" + data[i].Status + "</td><td><button class='btn btn-primary' id='ticketDetailButton' value='" + data[i].id + "' data-target='ticketDetailsModal'>Ticket Details</button></td></tr>");
+                    if (data[i].Status !== 'Closed') {
+                        $("#userTicketsAppend").append("<tr><td>" + data[i].id + "</td><td>" + data[i].Description + "</td><td>" + data[i].Status + "</td><td><button class='btn btn-primary' id='ticketDetailButton' value='" + data[i].id + "' data-target='ticketDetailsModal'>Ticket Details</button></td></tr>");
+                    }
                 }
             }
         });
@@ -92,9 +94,9 @@ $(document).ready(function() {
         $.get("/api/helpdesk/ticket/" + ticketID, function(data) {
             $("#ticket-number").text(data.id);
             $("#ticket-number").val(data.id);
-            //$("#request-type-update").text(data.Title);
+            $("select [id=request-type-update]").find("option[value=" + data.id + "]").attr("selected", true);
             $("#problem-description-update").text(data.Description);
-            $("#status").text(data.Status);
+            $("select [id=request-type-update]").find("option[value=" + data.Status + "]").attr("selected", true);
             $("#ticket-notes").text(data.Notes);
             $("#ticket-details").modal("toggle");
         })
@@ -103,7 +105,7 @@ $(document).ready(function() {
     function updateTickets() {
         var id = $("#ticket-number").val().trim();
         var notes = $("#ticket-notes").val().trim();
-        //var status = $("#status").val().trim();
+        var status = $("#status").val().trim();
         var type = $("#request-type-update").val().trim();
         var updateTicket = {
             id: id,
