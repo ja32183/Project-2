@@ -4,5 +4,9 @@ module.exports = function(sequelize, DataTypes) {
         Password: DataTypes.STRING,
         Admin: DataTypes.BOOLEAN,
     });
+
+    Users.associate = function(models) {
+        Users.hasMany(models.Helpdesk);
+    };
     return Users;
 };

@@ -17,7 +17,24 @@ module.exports = function(sequelize, DataTypes) {
         Closed: {
             type: DataTypes.BOOLEAN,
             defaultValue: false
+        },
+        Notes: {
+            type: DataTypes.TEXT
+        },
+        Created_By: {
+            type: DataTypes.STRING,
+            allowNull: false
         }
     });
+
+    Helpdesk.associate = function(models) {
+        Helpdesk.belongsTo(models.Users, {
+            foreignKey: {
+                allowNull: false
+            }
+        });
+    }
+
+
     return Helpdesk;
 };

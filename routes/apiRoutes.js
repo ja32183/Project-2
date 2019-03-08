@@ -28,9 +28,21 @@ module.exports = function(app) {
     passport.authenticate('local', {successRedirect: '/tickets',failureRedirect: '/',session: false}));
 
 
+
     // Get all tickets
     app.get("/api/helpdesk", function(req, res) {
         db.Helpdesk.findAll({}).then(function(dbHelpdesk) {
+            res.json(dbHelpdesk);
+        });
+    });
+
+    // Get one ticket by id to see details and update.
+    app.get("/api/helpdesk/ticket/:id", function(req, res) {
+        db.Helpdesk.findOne({
+            where: {
+                id: req.params.id
+            }
+        }).then(function(dbHelpdesk) {
             res.json(dbHelpdesk);
         });
     });
@@ -47,11 +59,9 @@ module.exports = function(app) {
     });
 
     //git all tickets opened by a particular user.
-    app.get("/api/helpdesk/Opened_By/Opened_By:", function(req, res) {
+    app.get("/api/helpdesk/Opened_By/:username", function(req, res) {
         db.Helpdesk.findAll({
-            where: {
-                Opened_By: req.params.Opened_By
-            }
+            include: [db.Users]
         }).then(function(dbHelpdesk) {
             res.json(dbHelpdesk);
         });
@@ -76,7 +86,7 @@ module.exports = function(app) {
     });
 
     // PUT route for updating tickets
-    app.put("/api/helpdesk", function(req, res) {
+    app.put("/api/helpdesk/update", function(req, res) {
         // Add code here to update a post using the values in req.body, where the id is equal to
         db.Helpdesk.update(req.body, {
             where: {
